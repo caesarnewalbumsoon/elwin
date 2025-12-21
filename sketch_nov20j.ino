@@ -87,13 +87,13 @@ void loop() {
     Forward(turnSpeed);
   }
 
-  // Left sensor sees black (0) → line is on LEFT → turn LEFT
+  // Left sensor sees black (0) → line is on LEFT → turn RIGHT
   else if (left == 0 && mid == 0 && right == 1) {
     turnRight(turnSpeed);
 
   }
 
-  // Right sensor sees black (0) → line is on RIGHT → turn RIGHT
+  // Right sensor sees black (0) → line is on RIGHT → turn LEFT
   else if (left == 1 && mid == 0 && right == 0) {
     turnLeft(turnSpeed);
   }
