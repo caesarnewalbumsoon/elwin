@@ -78,10 +78,7 @@ void loop() {
   int mid  = digitalRead(MID_SENSOR);       // 1=black, 0=white
   int right = digitalRead(RIGHT_SENSOR);    // 1=white, 0=black (inverted)
 
-  // -------------------------`
   // MAIN LOGIC
-  // -------------------------
-
   // Middle sees black → go straight
   if ((mid == 1) && (left == 1) && (right == 1)) {
     Forward(turnSpeed);
