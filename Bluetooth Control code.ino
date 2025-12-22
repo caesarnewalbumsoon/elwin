@@ -28,10 +28,7 @@ void setup() {
   stopMotors();
   Serial.println("Bluetooth Ready!");
 }
-
-// ---------------------
 // Motor functions
-// ---------------------
 void forward() {
   digitalWrite(IN1, LOW);
   digitalWrite(IN2, HIGH);
@@ -77,9 +74,7 @@ void stopMotors() {
   analogWrite(ENB, 0);
 }
 
-// ---------------------
 // Main loop
-// ---------------------
 void loop() {
   if (BT.available()) {
     char command = BT.read();
