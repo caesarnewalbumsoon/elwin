@@ -3,19 +3,13 @@
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 
-// ---------------------
 // LCD setup
-// ---------------------
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
-// ---------------------
 // Create MPU6050 object
-// ---------------------
 Adafruit_MPU6050 mpu;
 
-// ---------------------
 // Motor pins
-// ---------------------
 #define ENA 3
 #define IN1 2
 #define IN2 1
@@ -25,30 +19,22 @@ Adafruit_MPU6050 mpu;
 
 int speedMotor = 200;  // PWM speed (0-255)
 
-// ---------------------
-// MPU accelerometer variables (unchanged)
-// ---------------------
+// MPU accelerometer variables
 long accelX, accelY, accelZ;
 float angleOffset = 0;
 float pitch = 0;
 float filterStrength = 0.20;
 
-// ---------------------
 // Robot state variables
-// ---------------------
 bool climbing = false;
 bool topReached = false;
 float maxClimbAngle = 0;
 
-// ---------------------
 // Gyro-based rotation variables
-// ---------------------
 float yawAngle = 0;
 unsigned long lastTime = 0;
 
-// ---------------------
-// Read MPU accelerometer (unchanged)
-// ---------------------
+// Read MPU accelerometer
 void readMPU() {
   Wire.beginTransmission(0x68);
   Wire.write(0x3B);
@@ -60,9 +46,7 @@ void readMPU() {
   accelZ = Wire.read() << 8 | Wire.read();
 }
 
-// ---------------------
-// Compute angle from accelerometer (unchanged)
-// ---------------------
+// Compute angle from accelerometer 
 float computeRawAngle() {
   float ax = accelX;
   float ay = accelY;
@@ -72,9 +56,7 @@ float computeRawAngle() {
   return angle;
 }
 
-// ---------------------
 // Motor functions
-// ---------------------
 void forward(int spd) {
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
@@ -89,9 +71,7 @@ void stopMotors() {
   digitalWrite(IN3, LOW); digitalWrite(IN4, LOW);
 }
 
-// ---------------------
 // Gyro-based 360° turn
-// ---------------------
 void turn360() {
   yawAngle = 0;
   lastTime = millis();
@@ -125,18 +105,14 @@ void turn360() {
   stopMotors(); // stop after completing 360°
 }
 
-// ---------------------
 // Setup
-// ---------------------
 void setup() {
   Wire.begin();
   Serial.begin(9600);
 
   lcd.begin(16, 2);
 
-  // ---------------------
   // Initialize MPU6050 gyro
-  // ---------------------
   if (!mpu.begin()) {
     lcd.print("MPU fail");
     while (1);
@@ -145,18 +121,13 @@ void setup() {
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
   mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
 
-  // ---------------------
-  // Hardcoded 1-second forward movement at startup
-  // ---------------------
   lcd.print("Starting Forward");
   forward(speedMotor);
   delay(1000);
   stopMotors();
   lcd.clear();
 
-  // ---------------------
-  // MPU accelerometer calibration (unchanged)
-  // ---------------------
+  // MPU accelerometer calibration
   lcd.print("Calibrating...");
   Wire.beginTransmission(0x68);
   Wire.write(0x6B);
@@ -172,9 +143,7 @@ void setup() {
   lcd.clear();
 }
 
-// ---------------------
 // Main loop
-// ---------------------
 void loop() {
   readMPU();
 
@@ -187,18 +156,14 @@ void loop() {
   lcd.print(angle);
   lcd.print("   ");
 
-  // ---------------------
   // 1) Flat path
-  // ---------------------
   if (!climbing && !topReached && abs(angle) < 3) {
     forward(speedMotor);
     lcd.setCursor(0, 1);
     lcd.print("Flat Path       ");
   }
 
-  // ---------------------
   // 2) Start climbing
-  // ---------------------
   if (angle < -7 && !climbing) {
     climbing = true;
     maxClimbAngle = angle;
@@ -211,9 +176,7 @@ void loop() {
     if (angle < maxClimbAngle) maxClimbAngle = angle;
   }
 
-  // ---------------------
   // 3) Detect top and turn 360 using gyro
-  // ---------------------
   if (climbing && !topReached && abs(angle) < 3) {
     stopMotors();
     topReached = true;
@@ -245,9 +208,7 @@ void loop() {
     turn360(); // use gyro-based 360° turn
   }
 
-  // ---------------------
   // 4) Going down
-  // ---------------------
   if (topReached && angle > 5) {
     forward(speedMotor);
     lcd.setCursor(0, 1);
