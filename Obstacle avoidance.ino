@@ -21,9 +21,6 @@ int speedMotor = 180;
 
 long distance;
 
-// ---------------------
-// Motors
-// ---------------------
 void forward(int spd) {
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
@@ -63,9 +60,6 @@ void turnLeft(int spd, int timeMs) {
   stopMotors();
 }
 
-// ---------------------
-// Setup
-// ---------------------
 void setup() {
   // Motor pins
   pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
@@ -83,9 +77,7 @@ void setup() {
   lcd.clear();
 }
 
-// ---------------------
 // Read ultrasonic distance
-// ---------------------
 long readUltrasonic() {
   digitalWrite(TRIG, LOW);
   delayMicroseconds(2);
@@ -97,10 +89,7 @@ long readUltrasonic() {
   long distance = duration * 0.034 / 2; // cm
   return distance;
 }
-
-// ---------------------
 // Loop
-// ---------------------
 void loop() {
   distance = readUltrasonic();
 
